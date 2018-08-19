@@ -114,16 +114,51 @@ public class Control {
         String node = element.getAttribute(tag);
         return node;
     }
+   
+    
+    private static void setSucesores(List<Actividad> actList,List<Relacion> relList) {
+    	Actividad actividad;
+    	for (Relacion relacion : relList) {
+			actividad = getActividadPredecesora(actList, relacion.getSucesor());
+    		actividad.setPredecesor(getActividadSucesora(actList, relacion.getActividad()));
+		}
+    }
+    
+    private static Actividad getActividadSucesora(List<Actividad> actList, String sucesor) {
+    	for(Actividad actividad : actList){
+    		if(actividad.getId().equals(sucesor)) {
+    			return actividad;
+    		}
+    	}
+		return null;
+    	
+    }
+    
+    private static Actividad getActividadPredecesora(List<Actividad> actList, String predecesor) {
+    	for(Actividad actividad : actList){
+    		if(actividad.getId().equals(predecesor)) {
+    			return actividad;
+    		}
+    	}
+		return null;
+    	
+    }
+    
+    
     //Para cada actividad, si el ID es igual al atributo actividad, asignele el sucesor contenido en la relacion. 
     private static void setRelacion(List<Relacion> relList, List<Actividad> actList) {
     	for (Actividad actividad : actList) {
 	    	for (Relacion relacion : relList) {
 				if(relacion.getActividad().equals(actividad.getId())) {
-					actividad.setSucesor(relacion.getSucesor());
+					Actividad sucesor = getActividadSucesora(actList, relacion.getSucesor());
+					actividad.setSucesor(sucesor);
 				}
 			}
     	
     	}
+    	setSucesores(actList, relList);
     }
+    
+
 
 }

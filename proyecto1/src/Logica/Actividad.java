@@ -19,8 +19,10 @@ public class Actividad {
     int terminoLejano;
     int terminoCercano;
 
-    public ArrayList<String> sucesor = new ArrayList<String>();
-
+    public ArrayList<Actividad> predecesor = new ArrayList<Actividad>();
+    public ArrayList<Actividad> sucesor = new ArrayList<Actividad>();
+   
+    
     public Actividad() {
     }
 
@@ -56,11 +58,19 @@ public class Actividad {
         this.y = y;
     }
 
-    public ArrayList<String> getSucesor() {
+    public ArrayList<Actividad> getSucesor() {
         return sucesor;
     }
 
-    public void setInicioCercano(int inicioCercano) {
+    public ArrayList<Actividad> getPredecesor() {
+		return predecesor;
+	}
+   
+	public void setPredecesor(Actividad predecesor) {
+		this.predecesor.add(predecesor);
+	}
+
+	public void setInicioCercano(int inicioCercano) {
         this.inicioCercano = inicioCercano;
     }
 
@@ -76,7 +86,7 @@ public class Actividad {
         this.terminoCercano = terminoCercano;
     }
 
-    public void setSucesor(String elemento) {
+    public void setSucesor(Actividad elemento) {
         this.sucesor.add(elemento);
     }
 
@@ -96,21 +106,36 @@ public class Actividad {
         return terminoCercano;
     }
 
-    public String imprimeLista() {
+    public String imprimeListaSucesores() {
         String x = " ";
+        
         if (sucesor != null) {
-            for (String string : sucesor) {
-                x = x + string + " ";
+            for (Actividad string : sucesor) {
+                x = x + string.getId() + " ";
             }
         } else {
             x = "Sin sucesor";
         }
         return x;
     }
+    
+    
+    public String imprimeListaPredecesores() {
+        String x = " ";
+        
+        if (sucesor != null) {
+            for (Actividad string : predecesor) {
+                x = x + string.getId() + " ";
+            }
+        } else {
+            x = "Sin Predecesor";
+        }
+        return x;
+    }
 
     @Override
     public String toString() {
-        return "Actividad [id=" + id + ", duracion=" + duracion + ", x=" + x + ", y=" + y + ", sucesor=" + imprimeLista()
+        return "Actividad [id=" + id + ", duracion=" + duracion + ", x=" + x + ", y=" + y + ", sucesor=" + imprimeListaSucesores()+ ", predecesor=" + imprimeListaPredecesores()
                 + "]";
     }
 
