@@ -135,8 +135,8 @@ public class Actividad {
 
     @Override
     public String toString() {
-        return "Actividad [id=" + id + ", duracion=" + duracion + ", x=" + x + ", y=" + y + ", sucesor=" + imprimeListaSucesores()+ ", predecesor=" + imprimeListaPredecesores()
-                + "]";
+        return "Actividad [id=" + id + ", duracion=" + duracion + ", sucesor=" + imprimeListaSucesores()+ ", predecesor=" + imprimeListaPredecesores()
+                + "Inicio cercano= "+ inicioCercano + " Termino cercano= " + terminoCercano;
     }
 
 }

@@ -25,18 +25,17 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import Logica.*;
+import java.util.Iterator;
 
 public class Control {
-
-
-      
+    
     public static void main(String[] args) {
         // Define el path donde se encuentra el archivo
         String filePath = "src/AcesoADatos/datos.xml";
-        
+
         //Se crea una instancia de la clase 'file' y se le envia de parametro el path del XML
         File xmlFile = new File(filePath);
-        
+
         //La funcionalidad de DocumentBuilderFactory y DocumentBuilder es leer el archivo XML
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
@@ -45,7 +44,7 @@ public class Control {
             Document doc = dBuilder.parse(xmlFile);
             doc.getDocumentElement().normalize();
             System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-           
+            
             NodeList nodeList = doc.getElementsByTagName("Actividad");
             NodeList nodeList2 = doc.getElementsByTagName("Relacion");
             //now XML is loaded as Document in memory, lets convert it to Object List
@@ -57,32 +56,30 @@ public class Control {
             for (int i = 0; i < nodeList.getLength(); i++) {
                 relList.add(getRelacion(nodeList2.item(i)));
             }
-           
+
             //lets print Employee list information
-            for (Actividad act : actList) {
+            /*for (Actividad act : actList) {
                 System.out.println(act.toString());
             }
             
             for (Relacion rel : relList) {
                 System.out.println(rel.toString());
-            }
-            
+            }*/
             setRelacion(relList, actList);
+            
+            calculos(actList);
             
             for (Actividad act : actList) {
                 System.out.println(act.toString());
             }
             
-            
         } catch (SAXException | ParserConfigurationException | IOException e1) {
             e1.printStackTrace();
         }
-    	
-    	//System.out.println("Hola");
 
+        //System.out.println("Hola");
     }
-
-
+    
     private static Actividad getActividad(Node node) {
         //XMLReaderDOM domReader = new XMLReaderDOM();
         Actividad act = new Actividad();
@@ -93,10 +90,9 @@ public class Control {
             act.setX((Integer.parseInt(getTagValue("x", element))));
             act.setY((Integer.parseInt(getTagValue("y", element))));
         }
-
+        
         return act;
     }
-
     
     private static Relacion getRelacion(Node node) {
         //XMLReaderDOM domReader = new XMLReaderDOM();
@@ -106,59 +102,107 @@ public class Control {
             rel.setActividad((getTagValue("actividad", element)));
             rel.setSucesor((getTagValue("sucesor", element)));
         }
-
+        
         return rel;
     }
-
+    
     private static String getTagValue(String tag, Element element) {
         String node = element.getAttribute(tag);
         return node;
     }
-   
     
-    private static void setSucesores(List<Actividad> actList,List<Relacion> relList) {
-    	Actividad actividad;
-    	for (Relacion relacion : relList) {
-			actividad = getActividadPredecesora(actList, relacion.getSucesor());
-    		actividad.setPredecesor(getActividadSucesora(actList, relacion.getActividad()));
-		}
+    private static void setSucesores(List<Actividad> actList, List<Relacion> relList) {
+        Actividad actividad;
+        for (Relacion relacion : relList) {
+            actividad = getActividadPredecesora(actList, relacion.getSucesor());
+            actividad.setPredecesor(getActividadSucesora(actList, relacion.getActividad()));
+        }
     }
     
     private static Actividad getActividadSucesora(List<Actividad> actList, String sucesor) {
-    	for(Actividad actividad : actList){
-    		if(actividad.getId().equals(sucesor)) {
-    			return actividad;
-    		}
-    	}
-		return null;
-    	
+        for (Actividad actividad : actList) {
+            if (actividad.getId().equals(sucesor)) {
+                return actividad;
+            }
+        }
+        return null;
+        
     }
     
     private static Actividad getActividadPredecesora(List<Actividad> actList, String predecesor) {
-    	for(Actividad actividad : actList){
-    		if(actividad.getId().equals(predecesor)) {
-    			return actividad;
-    		}
-    	}
-		return null;
-    	
+        for (Actividad actividad : actList) {
+            if (actividad.getId().equals(predecesor)) {
+                return actividad;
+            }
+        }
+        return null;
+        
     }
-    
-    
+
     //Para cada actividad, si el ID es igual al atributo actividad, asignele el sucesor contenido en la relacion. 
     private static void setRelacion(List<Relacion> relList, List<Actividad> actList) {
-    	for (Actividad actividad : actList) {
-	    	for (Relacion relacion : relList) {
-				if(relacion.getActividad().equals(actividad.getId())) {
-					Actividad sucesor = getActividadSucesora(actList, relacion.getSucesor());
-					actividad.setSucesor(sucesor);
-				}
-			}
-    	
-    	}
-    	setSucesores(actList, relList);
+        for (Actividad actividad : actList) {
+            for (Relacion relacion : relList) {
+                if (relacion.getActividad().equals(actividad.getId())) {
+                    Actividad sucesor = getActividadSucesora(actList, relacion.getSucesor());
+                    actividad.setSucesor(sucesor);
+                }
+            }
+            
+        }
+        setSucesores(actList, relList);
     }
+
+    // define 0 para las actividades que son el inicio
+    private static void definirInicio(List<Actividad> listaActividades) {
+        
+        for (Actividad actividad : listaActividades) {
+            
+            if (actividad.getPredecesor() == null) {
+                
+                actividad.setInicioCercano(0);
+                actividad.setTerminoCercano(actividad.getDuracion());
+            }
+        }
+        
+    }
+
+    //selecciona de los predecesores el mayor
+    private static Actividad buscarMayor(List<Actividad> listaPredecesor) {
+        Actividad aux = new Actividad();
+       
+                
+        for (int i = 0; i < listaPredecesor.size(); i++) {
+            if(listaPredecesor.get(i).getTerminoCercano()>aux.getTerminoCercano())
+                aux= listaPredecesor.get(i);
+        }
+//        for (Actividad actividad : listaPredecesor) {
+//            if(actividad.getTerminoCercano()> aux.getTerminoCercano())
+//                aux= actividad;
+//        }
     
+    return aux;
+}
+
+private static void calcularCercanos(List<Actividad> listaActividades){
+        
+        for(Actividad actividad : listaActividades){
+            
+               // if(actividad.getPredecesor().size()>1){
+               
+                 actividad.setInicioCercano(buscarMayor(actividad.getPredecesor()).getTerminoCercano());
+                 actividad.setTerminoCercano(actividad.getInicioCercano()+ actividad.getDuracion());
+                //}
+                
+                
+            
+        }
+    }
 
 
+private static void calculos(List<Actividad> listaActividades){
+    definirInicio(listaActividades);
+    calcularCercanos(listaActividades);
+    
+}
 }
