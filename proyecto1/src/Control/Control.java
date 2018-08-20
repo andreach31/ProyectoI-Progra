@@ -67,6 +67,9 @@ public class Control {
             }*/
             setRelacion(relList, actList);
             
+            
+            
+            
             calculos(actList);
             
             for (Actividad act : actList) {
@@ -194,15 +197,60 @@ private static void calcularCercanos(List<Actividad> listaActividades){
                  actividad.setTerminoCercano(actividad.getInicioCercano()+ actividad.getDuracion());
                 //}
                 
-                
-            
+                    
         }
+        
+}
+
+ private static void definirFinal(List<Actividad> listaActividades) {
+        
+        for (Actividad actividad : listaActividades) {
+            
+            if (actividad.getSucesor() == null) {
+               
+                actividad.setTerminoLejano(actividad.getTerminoCercano());
+            }
+        }
+        
     }
 
+        //selecciona de los predecesores el menor
+    private static Actividad buscarMenor(List<Actividad> listaSucesores) {
+        Actividad aux = new Actividad();
+
+        for (int i = 0; i < listaSucesores.size(); i++) {
+            if (listaSucesores.get(i).getInicioLejano()< aux.getInicioLejano()) {
+                aux = listaSucesores.get(i);
+            }
+        }
+//        for (Actividad actividad : listaPredecesor) {
+//            if(actividad.getTerminoCercano()> aux.getTerminoCercano())
+//                aux= actividad;
+//        }
+
+        return aux;
+    }
+    
+
+
+        private static void calcularLejanos(List<Actividad> listaActividades){
+        
+        for(Actividad actividad : listaActividades){
+            
+               // if(actividad.getPredecesor().size()>1){
+               
+                 actividad.setTerminoLejano(buscarMenor(actividad.getSucesor()).getInicioLejano());
+                 actividad.setInicioLejano(actividad.getTerminoLejano()- actividad.getDuracion());
+                //}
+                
+                    
+        }
+        }
 
 private static void calculos(List<Actividad> listaActividades){
     definirInicio(listaActividades);
     calcularCercanos(listaActividades);
-    
+    definirFinal(listaActividades);
+    calcularLejanos(listaActividades);
 }
 }
