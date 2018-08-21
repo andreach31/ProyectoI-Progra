@@ -18,11 +18,11 @@ public class Actividad {
     int inicioLejano;
     int terminoLejano;
     int terminoCercano;
+    int holgura;
 
     public ArrayList<Actividad> predecesor = new ArrayList<Actividad>();
     public ArrayList<Actividad> sucesor = new ArrayList<Actividad>();
-   
-    
+
     public Actividad() {
     }
 
@@ -63,14 +63,14 @@ public class Actividad {
     }
 
     public ArrayList<Actividad> getPredecesor() {
-		return predecesor;
-	}
-   
-	public void setPredecesor(Actividad predecesor) {
-		this.predecesor.add(predecesor);
-	}
+        return predecesor;
+    }
 
-	public void setInicioCercano(int inicioCercano) {
+    public void setPredecesor(Actividad predecesor) {
+        this.predecesor.add(predecesor);
+    }
+
+    public void setInicioCercano(int inicioCercano) {
         this.inicioCercano = inicioCercano;
     }
 
@@ -106,9 +106,18 @@ public class Actividad {
         return terminoCercano;
     }
 
+    public int getHolgura() {
+        return holgura;
+    }
+
+    public void setHolgura(int holgura) {
+        this.holgura = holgura;
+    }
+    
+
     public String imprimeListaSucesores() {
         String x = " ";
-        
+
         if (sucesor != null) {
             for (Actividad string : sucesor) {
                 x = x + string.getId() + " ";
@@ -118,11 +127,10 @@ public class Actividad {
         }
         return x;
     }
-    
-    
+
     public String imprimeListaPredecesores() {
         String x = " ";
-        
+
         if (sucesor != null) {
             for (Actividad string : predecesor) {
                 x = x + string.getId() + " ";
@@ -135,8 +143,9 @@ public class Actividad {
 
     @Override
     public String toString() {
-        return "Actividad [id=" + id + ", duracion=" + duracion + ", sucesor=" + imprimeListaSucesores()+ ", predecesor=" + imprimeListaPredecesores()
-                + "Inicio cercano= "+ inicioCercano + " Termino cercano= " + terminoCercano + " Inicio Lejano =" + inicioLejano + " Termino Lejano" + getTerminoLejano();
+        return "Actividad [id=" + id + ", duracion=" + duracion + ", sucesor=" + imprimeListaSucesores() + ", predecesor=" + imprimeListaPredecesores()
+                + "Inicio cercano= " + inicioCercano + " Termino cercano= " + terminoCercano + " Inicio Lejano =" + inicioLejano + " Termino Lejano =" + terminoLejano +
+          " holgura =" + holgura;
     }
 
 }
