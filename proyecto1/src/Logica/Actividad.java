@@ -136,7 +136,7 @@ public class Actividad {
     @Override
     public String toString() {
         return "Actividad [id=" + id + ", duracion=" + duracion + ", sucesor=" + imprimeListaSucesores()+ ", predecesor=" + imprimeListaPredecesores()
-                + "Inicio cercano= "+ inicioCercano + " Termino cercano= " + terminoCercano + "Inicio Lejano =" + inicioLejano + "Termino Lejano" + terminoLejano;
+                + "Inicio cercano= "+ inicioCercano + " Termino cercano= " + terminoCercano + " Inicio Lejano =" + inicioLejano + " Termino Lejano" + getTerminoLejano();
     }
 
 }
